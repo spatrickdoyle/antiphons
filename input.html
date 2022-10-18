@@ -1,0 +1,68 @@
+<html>
+    <head>
+        <title>Add New Antiphon</title> 
+        <script>
+            function download(filename, text) {
+                var element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+                element.setAttribute('download', filename);
+            
+                element.style.display = 'none';
+                document.body.appendChild(element);
+            
+                element.click();
+            
+                document.body.removeChild(element);
+            }
+        </script>
+    </head>
+
+    <body>
+        <form onsubmit="download(this['index'].value+'.js', 'ant_'+this['index'].value+' = '+JSON.stringify([
+            {'index':this['index'].value,
+                'entrance': {
+                    'incipit':this['entr_incipit'].value,
+                    'verses':this['entr_verses'].value,
+                    'text':this['entr_text'].value,
+                    'source':this['entr_source'].value,
+                    'gabc':this['entr_gabc'].value
+                },
+                'offertory': {
+                    'incipit':this['offr_incipit'].value,
+                    'verses':this['offr_verses'].value,
+                    'text':this['offr_text'].value,
+                    'source':this['offr_source'].value,
+                    'gabc':this['offr_gabc'].value
+                },
+                'communion': {
+                    'incipit':this['comm_incipit'].value,
+                    'verses':this['comm_verses'].value,
+                    'text':this['comm_text'].value,
+                    'source':this['comm_source'].value,
+                    'gabc':this['comm_gabc'].value
+                }
+            }
+        ],null,2))">
+            Index: <input type="text" name="index"> <br/><br/>
+            Entrance <br/>
+            Incipit: <input type="text" name="entr_incipit"> <br/>
+            Verses: <input type="text" name="entr_verses"> <br/>
+            Text: <textarea name="entr_text"></textarea> <br/>
+            Source: <input type="text" name="entr_source"> <br/>
+            gabc: <textarea name="entr_gabc"></textarea> <br/><br/>
+            Offertory <br/>
+            Incipit: <input type="text" name="offr_incipit"> <br/>
+            Verses: <input type="text" name="offr_verses"> <br/>
+            Text: <textarea name="offr_text"></textarea> <br/>
+            Source: <input type="text" name="offr_source"> <br/>
+            gabc: <textarea name="offr_gabc"></textarea> <br/><br/>
+            Communion <br/>
+            Incipit: <input type="text" name="comm_incipit"> <br/>
+            Verses: <input type="text" name="comm_verses"> <br/>
+            Text: <textarea name="comm_text"></textarea> <br/>
+            Source: <input type="text" name="comm_source"> <br/>
+            gabc: <textarea name="comm_gabc"></textarea> <br/>
+            <input type="submit" value="Download">
+        </form>
+    </body>
+</html>

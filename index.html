@@ -1,0 +1,133 @@
+<html>
+    <head>
+        <title>Antiphons</title> 
+        <!--<script type="text/javascript" src="jquery-1.4.4.min.js"></script>-->
+        <!--<script type="text/javascript" src="script.js"></script>-->
+        <script type="text/javascript" src="index.js"></script>
+        <script type="text/javascript" src="https://ex.surge.sh/exsurge.js"></script>
+        <script>
+            function loadAntiphons(selectObject) {
+                var value = selectObject.value;
+                var script = document.createElement('script');
+                script.onload = function () {
+                    eval('current = ant_'+value+';');
+
+                    document.getElementById('entr_incipit').innerHTML = current[0].entrance.incipit;
+                    document.getElementById('entr_verses').innerHTML = current[0].entrance.verses;
+                    updateChant(current[0].entrance.gabc,entranceContainer,entrancescore);
+                    document.getElementById('entr_link').href = 'https://www.sourceandsummit.com/editor/alpha/#'+encodeURIComponent(current[0].entrance.gabc);
+
+                    document.getElementById('comm_incipit').innerHTML = current[0].communion.incipit;
+                    document.getElementById('comm_verses').innerHTML = current[0].communion.verses;
+                    updateChant(current[0].communion.gabc,communionContainer,communionscore);
+                    document.getElementById('comm_link').href = 'https://www.sourceandsummit.com/editor/alpha/#'+encodeURIComponent(current[0].communion.gabc);
+                };
+                script.src ='gabc/'+value+'.js';
+
+                document.head.appendChild(script);
+            }
+        </script>
+        <link href='https://fonts.googleapis.com/css?family=EB Garamond' rel='stylesheet'>
+        <style>
+            body {
+                font-family: 'EB Garamond';
+                font-size: 18pt;
+            }
+            .main {
+                margin-left: 10%;
+                margin-right: 10%;
+                margin-top: 5%;
+            }
+            select {
+                appearance: none;
+                background-color: transparent;
+                border: none;
+                padding: 0 1em 0 0;
+                margin: 0;
+                width: 100%;
+                font-family: inherit;
+                font-size: 22pt;
+                cursor: inherit;
+                line-height: inherit;
+                outline: none;
+                text-align: center;
+                margin-top: 5%;
+            }
+            a, a:hover, a:visited, a:active, a:link {
+                color: inherit;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <select id="sunday-dropdown" name="sunday" onchange="loadAntiphons(this)"></select>
+        <script>
+            let dropdown = document.getElementById('sunday-dropdown');
+            dropdown.length = 0;
+
+            let defaultOption = document.createElement('option');
+            defaultOption.text = 'Sunday or Solemnity';
+
+            dropdown.add(defaultOption);
+            dropdown.selectedIndex = 0;
+
+            let option;
+            for (let i = 0; i < index.length; i++) {
+                option = document.createElement('option');
+                option.text = index[i].Name+', Year '+index[i].Year;
+                option.value = index[i].Index;
+                dropdown.add(option);
+            }
+        </script>
+
+        <div class="main" style="text-align:left;">
+            <a id="entr_link" target="_blank"> <span>INTRIOT</span> <br/>
+            <span id="entr_incipit" style="font-style: italic;"></span>
+            <span style="float:right; font-style: italic;" id="entr_verses"></span>
+            <div id="entrance-container"></div> </a> <br/>
+
+            <a id="comm_link" target="_blank"></a> <span>COMMUNION</span> <br/>
+            <span id="comm_incipit" style="font-style: italic;"></span>
+            <span style="float:right; font-style: italic;" id="comm_verses"></span>
+            <div id="communion-container"></div> </a> <br/>
+        </div>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/document-register-element/0.5.3/document-register-element.js">/* W3C Custom Elements */</script>
+            <script type="text/javascript" src="https://ex.surge.sh/exsurge.js"></script>
+            <script type="text/javascript">
+              var ctxt= new exsurge.ChantContext();
+              ctxt.lyricTextFont = "'EB Garamond', serif";
+              ctxt.lyricTextSize *= 1.2;
+              ctxt.dropCapTextFont = ctxt.lyricTextFont;
+              ctxt.annotationTextFont = ctxt.lyricTextFont;
+              var entrancescore;
+              var communionscore;
+              //var gabcSource = document.getElementById('gabcSource');
+              var entranceContainer = document.getElementById('entrance-container');
+              var communionContainer = document.getElementById('communion-container');
+
+              var updateChant = function(source, chantContainer,score) {
+                if (score) {
+                  exsurge.Gabc.updateMappingsFromSource(ctxt, score.mappings, source);
+                  score.updateNotations(ctxt);
+                } else {
+                  mappings = exsurge.Gabc.createMappingsFromSource(ctxt, source);
+                  score = new exsurge.ChantScore(ctxt, mappings, true);
+                  //score.annotation = new exsurge.Annotation(ctxt, "%V%");
+                }
+                layoutChant(chantContainer,score);
+              }
+              var layoutChant = function(chantContainer,score) {
+                // perform layout on the chant
+                score.performLayoutAsync(ctxt, function() {
+                  score.layoutChantLines(ctxt, chantContainer.clientWidth, function() {
+                    // render the score to svg code
+                    chantContainer.innerHTML = score.createSvg(ctxt);
+                  });
+                });
+              }
+            </script>
+
+    </body>
+</html>
